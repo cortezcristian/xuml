@@ -46,7 +46,7 @@ xUml.extend = function(obj1, obj2) {
 
 xUml.override = function(obj1, obj2) {
     for(var key in obj2) {
-            obj1[key] = obj2[key];
+        obj1[key] = obj2[key];
     }
 }
 
@@ -190,13 +190,15 @@ xUml.init = function(o){
         width: obj.width,
         height: obj.height
     });
+
+    $('#'+obj.container).append('<div id="canvas-textareas" style="display:block"></div>');
     
     xUml.desktopBg = new Kinetic.Rect({
       x: 0,
       y: 0,
       width: xUml.WIDTH,
       height: xUml.HEIGHT,
-      fill: xUml.gradients.blue()
+      fill: 'white'
     });
     
     var d = new Date(),
@@ -237,17 +239,22 @@ xUml.init = function(o){
 */
 xUml.classBox = function(o){ 
     this.conf = {
-        name: "class-name",
+        name: "class"+new Date().getTime()+Math.floor(Math.random()*101),
         title: "Class Name",
-        rectX: 0,
-        rectY: 0,
+        rectX: 90,
+        rectY: 10,
         width: 150,
+        attrs: [{ title: 'name', type: 'String' }],
         height: 100
     };
     
     xUml.override(this.conf, o || {});
 
     var rectX = this.conf.rectX, rectY = this.conf.rectY;
+
+    $('#canvas-textareas').append('<textarea id="'+this.conf.name+'"></textarea>');
+    var tmp = "C "+this.conf.title+"\n";
+    $('#'+this.conf.name).val(tmp);
         
     this.grp = new Kinetic.Group({
         x: rectX,
@@ -260,20 +267,19 @@ xUml.classBox = function(o){
     
     var txtTitle = new Kinetic.Text({
         x: 7,
-        y: 3,
+        y: 0,
         text: this.conf.title,
-        fontSize: 12,
+        fontSize: 16,
         fontFamily: "Arial",
-        fill: "#d1d1d1",
+        fill: "black",
         padding: 10,
         align: "left",
-        verticalAlign: "middle",
-        fontStyle: "bold"
+        verticalAlign: "middle"
     });
 
     var sepLine = new Kinetic.Line({
         points: [0,30,this.conf.width,30],
-        stroke: '#d1d1d1',
+        stroke: 'black',
         tension: 12,
         lineCap: 'round',
         lineJoin: 'round',
@@ -284,18 +290,34 @@ xUml.classBox = function(o){
       x: 0,
       y: 0,
       width: this.conf.width,
-      height: this.conf.height,
+      height: (this.conf.attrs.length+1)*26,
       cornerRadius: 5,
-      fill: 'gray',
+      fill: 'white',
       shadow: xUml.shadows.global(),
-      stroke: "white",
-      strokeWidth: 1,
+      stroke: 'black',
+      strokeWidth: 2,
       name: "box"
     });
     
     this.grp.add(box);
     this.grp.add(sepLine);
     this.grp.add(txtTitle);
+    var selfobj = this;
+    $.each(this.conf.attrs, function(i,v){
+        var attrsTitle = new Kinetic.Text({
+            x: 7,
+            y: 24*(i+1),
+            text: v.title,
+            name: "attr"+new Date().getTime()+Math.floor(Math.random()*101),
+            fontSize: 16,
+            fontFamily: "Arial",
+            fill: "black",
+            padding: 10,
+            align: "left",
+            verticalAlign: "middle"
+        });
+        selfobj.grp.add(attrsTitle);
+    });
     this.grp.conf = this.conf;
     this.grp.on("click", function() {
         // this.moveToTop();
@@ -318,7 +340,7 @@ xUml.classBox = function(o){
                         };
                         xUml.relations.push(dataConf);
                         xUml.relArrow();
-                        socket.emit('relCreated', { conf: dataConf });
+                        //socket.emit('relCreated', { conf: dataConf });
                         xUml.selection.stop();
                     }
                 break;
@@ -338,7 +360,7 @@ xUml.classBox = function(o){
     this.grp.on("dragend", function(e) {
         this.moveToTop();
         xUml.relDraw();
-        socket.emit('classDragEnd', { classConf: this });
+        //socket.emit('classDragEnd', { classConf: this });
     });
 
     this.grp.on("dblclick", function() {
@@ -433,14 +455,14 @@ xUml.optionssMenu = {
         icon: "./img/ico-applications.png",
         onClick: function(){
             var classNew = new xUml.classBox({
-                title: "sample X",
+                title: "Class ZZ",
                 name:'class'+new Date().getTime()+Math.floor(Math.random()*101),
                 rectX : 120
             });
             xUml.desktop.add(classNew);
             xUml.desktop.draw();
             xUml.log(classNew);
-            socket.emit('classCreated', { classConf: classNew.conf });
+            //socket.emit('classCreated', { classConf: classNew.conf });
         }
     },{
         label:"Relation",
@@ -603,7 +625,16 @@ window.onload = function() {
     xUml.render();
 
     xUml.log("Class drawn");
-    var classBox = new xUml.classBox({});
+    var classBox = new xUml.classBox({
+        title: "Challenge",
+        attrs: [
+              { title: 'name', type: 'String'} 
+            , { title: 'desc', type: 'String', control: 'Textarea'}
+            , { title: 'idReward', type: 'ObjectId', rel: '1..1', relTarget:'C Reward'}
+            , { title: 'rules', type: 'Array', rel: '1..*', relTarget:'C Rule'}
+            , { title: 'live', type: 'Boolean', control: 'Toggle'}
+            ]
+    });
     xUml.desktop.add(classBox);
     xUml.desktop.draw();
 };
