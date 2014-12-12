@@ -74,6 +74,7 @@ xUml.desktopBar = {};
 xUml.desktopCon = {};
 xUml.WIDTH = "";
 xUml.HEIGHT = "";
+xUml.container = "";
 xUml.classes = [];
 xUml.relations = [];
 
@@ -169,6 +170,7 @@ xUml.gradients.orange = function(){
     return 'orange';
 }
 
+
 /**
 * Init Method
 */
@@ -191,7 +193,8 @@ xUml.init = function(o){
         height: obj.height
     });
 
-    $('#'+obj.container).append('<div id="canvas-textareas" style="display:block"></div>');
+    $('#'+obj.container).prepend('<div id="canvas-textareas" style="display:block"></div>');
+    xUml.container = '#'+obj.container+' #canvas-textareas';
     
     xUml.desktopBg = new Kinetic.Rect({
       x: 0,
@@ -252,9 +255,14 @@ xUml.classBox = function(o){
 
     var rectX = this.conf.rectX, rectY = this.conf.rectY;
 
-    $('#canvas-textareas').append('<textarea id="'+this.conf.name+'"></textarea>');
+    $(xUml.container).prepend('<textarea class="textclass" id="'+this.conf.name+'"></textarea>');
+    $('#'+this.conf.name).on('blur', function(){
+       $(this).hide(); 
+    })
+    .keyup(function(e) {
+          if (e.keyCode == 27) { $(this).trigger('blur'); }
+    });
     var tmp = "C "+this.conf.title+"\n";
-    $('#'+this.conf.name).val(tmp);
         
     this.grp = new Kinetic.Group({
         x: rectX,
@@ -318,7 +326,9 @@ xUml.classBox = function(o){
             verticalAlign: "middle"
         });
         selfobj.grp.add(attrsTitle);
+        tmp += 'a '+v.title+'\n';
     });
+    $('#'+this.conf.name).val(tmp);
     this.grp.conf = this.conf;
     this.grp.on("click", function() {
         // this.moveToTop();
@@ -364,8 +374,14 @@ xUml.classBox = function(o){
         //socket.emit('classDragEnd', { classConf: this });
     });
 
-    this.grp.on("dblclick", function() {
-        console.log('DblClicked'+this.attrs.name);
+    this.grp.on("dblclick", function(e) {
+        $('textarea#'+this.attrs.name)
+            .css('left', 25+this.attrs.x+"px")
+            .css('margin-top', -1+this.attrs.y+"px")
+            .css('width', 10+this.children[0].attrs.width+"px")
+            .css('height', 5+this.children[0].attrs.height+"px")
+            .show().focus();
+        console.log('DblClicked', e, this, this.parent);
     });
 
     return this.grp;
@@ -675,7 +691,8 @@ window.onload = function() {
     xUml.log("Class drawn");
     var classRewardBox = new xUml.classBox({
         title: "Reward",
-        rectY: 200,
+        rectX: 600,
+        rectY: 100,
         attrs: [
               { title: 'name', type: 'String'} 
             , { title: 'desc', type: 'String', control: 'Textarea'}
