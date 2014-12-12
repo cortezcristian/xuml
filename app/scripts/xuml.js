@@ -9,6 +9,7 @@ __  _| | | |  \/  | |
 Inspired on:
   - http://cortezcristian.com/xkanvas/library/xkanvas-source-1.0.js
   - http://cortezcristian.com/xkanvas/test.html
+  - http://cortezcristian.com/xpm2canvas/
 
 * Graphics plugin
 * @author Cristian Cortez  
@@ -269,14 +270,16 @@ xUml.classBox = function(o){
         verticalAlign: "middle",
         fontStyle: "bold"
     });
+
     var sepLine = new Kinetic.Line({
-        points: [{x:0,y:30},{x:this.conf.width,y:30}],
-        stroke: 'green',
-        strokeWidth: 12,
+        points: [0,30,this.conf.width,30],
+        stroke: '#d1d1d1',
+        tension: 12,
         lineCap: 'round',
         lineJoin: 'round',
         name: "sepLine"
     });
+
     var box = new Kinetic.Rect({
       x: 0,
       y: 0,
@@ -337,6 +340,11 @@ xUml.classBox = function(o){
         xUml.relDraw();
         socket.emit('classDragEnd', { classConf: this });
     });
+
+    this.grp.on("dblclick", function() {
+        console.log('DblClicked'+this.attrs.name);
+    });
+
     return this.grp;
 }
 
