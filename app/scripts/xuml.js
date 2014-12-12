@@ -524,8 +524,7 @@ xUml.optionssMenu = {
         icon: "./img/ico-applications.png",
         onClick: function(){
             var classNew = new xUml.classBox({
-                title: "Class ZZ",
-                name:'class'+new Date().getTime()+Math.floor(Math.random()*101),
+                title: ""+new Date().getTime()+Math.floor(Math.random()*10),
                 rectX : 120
             });
             xUml.desktop.add(classNew);
