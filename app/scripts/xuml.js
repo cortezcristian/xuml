@@ -255,8 +255,13 @@ xUml.classBox = function(o){
 
     var rectX = this.conf.rectX, rectY = this.conf.rectY;
 
+    this.conf.name = 'class-'+this.conf.title;
+
     $(xUml.container).prepend('<textarea class="textclass" id="'+this.conf.name+'"></textarea>');
-    $('#'+this.conf.name).on('blur', function(){
+    $('#'+this.conf.name).on('blur', function(e){
+       var classRelated = xUml.desktop.get('.'+$(this).attr('id'));
+       xUml.parseClass($(this).val(), classRelated[0].attrs)
+       classRelated.remove();
        $(this).hide(); 
     })
     .keyup(function(e) {
@@ -277,7 +282,7 @@ xUml.classBox = function(o){
         x: 7,
         y: 0,
         text: this.conf.title,
-        name: "class-"+o.title,
+        name: "class-title-"+o.title,
         fontSize: 16,
         fontFamily: "Arial",
         fill: "black",
@@ -677,6 +682,35 @@ xUml.render = function(o){
     xUml.desktopBar.add(new xUml.mainBar());
     xUml.stage.add(xUml.desktopBar);
 }
+
+xUml.parseClass = function(text, params){
+    console.log(text);
+    var toParse = text.split("\n");
+    var obj = {
+       title : "copy",
+       attrs: []    
+    };
+    if(params){
+        obj.rectX = params.x || 0;
+        obj.rectY = params.y || 0;
+    }
+    $.each(toParse, function(i,line){
+       if(line.match(/^C .*/)){
+           obj.title = line.split(" ")[1]
+       } 
+       if(line.match(/^a .*/)){
+           obj.attrs.push({ title: line.split(" ")[1], type: 'String'});
+       } 
+    });
+
+    var c =  new xUml.classBox(obj);
+    xUml.desktop.add(c);
+    
+}
+
+xUml.classRedraw = function(classname, text){
+}
+
 /**
 * Magic starts here :)
 */
@@ -713,6 +747,8 @@ window.onload = function() {
     xUml.desktop.draw();
     xUml.relations.push({from:'attr-Challenge-idReward',to:'class-Reward'});
     xUml.relDraw()
+
+    //xUml.parseClass($('textarea').eq(0).val());
 };
 
 /**
