@@ -271,8 +271,8 @@ xUml.classBox = function(o){
     });
     var sepLine = new Kinetic.Line({
         points: [{x:0,y:30},{x:this.conf.width,y:30}],
-        stroke: "#333",
-        strokeWidth: 1,
+        stroke: 'green',
+        strokeWidth: 12,
         lineCap: 'round',
         lineJoin: 'round',
         name: "sepLine"
