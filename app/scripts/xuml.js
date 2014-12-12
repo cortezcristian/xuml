@@ -10,20 +10,6 @@ Inspired on:
   - http://cortezcristian.com/xkanvas/library/xkanvas-source-1.0.js
   - http://cortezcristian.com/xkanvas/test.html
 
-/**
-* __     ___               _       
-* \ \   / (_)___ _   _  __| | ___  
-*  \ \ / /| / __| | | |/ _` |/ _ \ 
-*   \ V / | \__ \ |_| | (_| | (_) |
-*    \_/  |_|___/\__,_|\__,_|\___/ 
-*                                  
-*  ____       _   _                  _          
-* |  _ \ __ _| |_| |_ ___ _ __ _ __ (_)_____ __ 
-* | |_) / _` | __| __/ _ \ '__| '_ \| |_  / '__|
-* |  __/ (_| | |_| ||  __/ |  | | | | |/ /| |   
-* |_|   \__,_|\__|\__\___|_|  |_| |_|_/___|_|   
-*                                               
-* 
 * Graphics plugin
 * @author Cristian Cortez  
 * @requires KineticJS v4.0.5 or above - http://www.kineticjs.com/
@@ -228,7 +214,7 @@ xUml.init = function(o){
         alpha: 0.9,
         fontSize: 10,
         fontFamily: "Arial",
-        textFill: "#d1d1d1",
+        fill: "#d1d1d1",
         padding: 15,
         align: "left",
         verticalAlign: "middle",
@@ -275,10 +261,9 @@ xUml.classBox = function(o){
         x: 7,
         y: 3,
         text: this.conf.title,
-        alpha: 0.9,
         fontSize: 12,
         fontFamily: "Arial",
-        textFill: "#d1d1d1",
+        fill: "#d1d1d1",
         padding: 10,
         align: "left",
         verticalAlign: "middle",
@@ -298,9 +283,9 @@ xUml.classBox = function(o){
       width: this.conf.width,
       height: this.conf.height,
       cornerRadius: 5,
-      fill: xUml.gradients.dark(),
+      fill: 'gray',
       shadow: xUml.shadows.global(),
-      stroke: "black",
+      stroke: "white",
       strokeWidth: 1,
       name: "box"
     });
@@ -492,7 +477,7 @@ xUml.buildMainMenu = function(){
             width: itemW,
             fontSize: 11,
             fontFamily: "Arial",
-            textFill: "#d1d1d1",
+            fill: "#d1d1d1",
             padding: 2,
             align: "center",
             verticalAlign: "middle",
@@ -613,9 +598,6 @@ window.onload = function() {
     var classBox = new xUml.classBox({});
     xUml.desktop.add(classBox);
     xUml.desktop.draw();
-    xUml.log("Relation created");
-    xUml.relations.push({});
-    xUml.relDraw();
 };
 
 /**
