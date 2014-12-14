@@ -13,7 +13,8 @@ Inspired on:
 
 * Graphics plugin
 * @author Cristian Cortez  
-* @requires KineticJS v4.0.5 or above - http://www.kineticjs.com/
+* @requires jQuery JavaScript Library v2.1.1 or above - http://jquery.com/
+* @requires KineticJS JavaScript Framework v5.1.0 or above - http://www.kineticjs.com/
 * 
 */
 
@@ -21,7 +22,7 @@ Inspired on:
  * xUmlRenderer Global Namespace
  * @module xUmlRenderer
  */
-var xUml = {};
+var xUml = window.xUml = {};
 /*
  * xUmlRenderer Version
  * @property ver
@@ -78,6 +79,9 @@ xUml.container = "";
 xUml.classes = [];
 xUml.relations = [];
 
+/**
+* Draw relationships
+*/
 xUml.relDraw = function(){
     //Remove Arrows
     $.each(xUml.desktop.get(".arrow"), function(i,v){
@@ -220,7 +224,7 @@ xUml.init = function(o){
         alpha: 0.9,
         fontSize: 10,
         fontFamily: "Arial",
-        fill: "#d1d1d1",
+        fill: "#999",
         padding: 15,
         align: "left",
         verticalAlign: "middle",
@@ -395,10 +399,140 @@ xUml.classBox = function(o){
 /**
 * Arrow
 */
-xUml.relArrow = function(nameFrom,nameTo){
+xUml.relArrow2 = function( nameFrom, nameTo, arrowType){
+    var enumArrowTypes = ['-', '->', '1..*', '1..1', '<->'];
+    var nodeType = xUml.desktop.get("."+nFrom)[0].nodeType;
+    arrowType = arrowType || '-';
+    
+}
+
+xUml.relStrat = {};
+xUml.relStrat.Group = function( nFrom, nTo, arrowType) {
+    // Draw
+    console.log("Draw group");    
+    var grpFrom = xUml.desktop.get("."+nFrom)[0],
+    grpTo = xUml.desktop.get("."+nTo)[0],
+    boxFrom = grpFrom.children[0].attrs,
+    boxTo = grpTo.children[0].attrs,
+    xStart = 0, yStart = 0, xEnd = 0, yEnd = 0;
+    if(grpFrom.attrs.x <= grpTo.attrs.x){ // F -> T
+        // console.log(((grpFrom.attrs.x + boxFrom.width) <= (grpTo.attrs.x + Math.round(boxTo.width/2))));
+        console.log((grpFrom.attrs.x + boxFrom.width) <= (grpTo.attrs.x + boxTo.width));
+        if((grpFrom.attrs.x + boxFrom.width) <= grpTo.attrs.x){// Pm1 = Xo + Wo/2
+            xStart = grpFrom.attrs.x + boxFrom.width;
+            yStart = grpFrom.attrs.y + Math.round(boxFrom.height/2);
+            xEnd = grpTo.attrs.x;
+            yEnd = grpTo.attrs.y + Math.round(boxTo.height/2);
+        }else{ //too close
+            if(grpFrom.attrs.y < grpTo.attrs.y){ // bottom To
+                xStart = grpFrom.attrs.x + Math.round(boxFrom.width/2);
+                yStart = grpFrom.attrs.y + boxFrom.height;
+                xEnd = grpTo.attrs.x + Math.round(boxTo.width/2);
+                yEnd = grpTo.attrs.y;
+            }else{ // bottom From
+                xStart = grpFrom.attrs.x + Math.round(boxFrom.width/2);
+                yStart = grpFrom.attrs.y;
+                xEnd = grpTo.attrs.x + Math.round(boxTo.width/2);
+                yEnd = grpTo.attrs.y + boxTo.height;
+            }
+        }
+    }else if (grpFrom.attrs.x > grpTo.attrs.x) { // T <- F
+        console.log(grpFrom.attrs.x >= (grpTo.attrs.x + Math.round(boxTo.width/2)));
+        if(grpFrom.attrs.x >= (grpTo.attrs.x + boxTo.width)){
+            xStart = grpFrom.attrs.x;
+            yStart = grpFrom.attrs.y + Math.round(boxFrom.height/2);
+            xEnd = grpTo.attrs.x + boxTo.width;
+            yEnd = grpTo.attrs.y + Math.round(boxTo.height/2);
+        }else{
+            if(grpFrom.attrs.y <= grpTo.attrs.y){ // bottom To
+                xStart = grpFrom.attrs.x + Math.round(boxFrom.width/2);
+                yStart = grpFrom.attrs.y + boxFrom.height;
+                xEnd = grpTo.attrs.x + Math.round(boxTo.width/2);
+                yEnd = grpTo.attrs.y;
+            }else{ // bottom From
+                xStart = grpFrom.attrs.x + Math.round(boxFrom.width/2);
+                yStart = grpFrom.attrs.y;
+                xEnd = grpTo.attrs.x + Math.round(boxTo.width/2);
+                yEnd = grpTo.attrs.y + boxTo.height;
+            }
+        }
+    }
+
+    console.log([xStart, yStart, xEnd, yEnd]);
+    //Depends on position but...
+    var line = new Kinetic.Line({
+        points: [xStart, yStart, xEnd, yEnd],
+        stroke: "red",
+        strokeWidth: 2,
+        name: "arrow",
+        lineJoin: "round"
+    });
+    xUml.desktop.add(line);
+    xUml.desktop.draw();
+};
+xUml.relStrat.Shape = {};
+xUml.relStrat.Shape.Text = function( nFrom, nTo, arrowType) {
+    // Draw
+    console.log("Draw text");    
+    var textFrom = xUml.desktop.get("."+nFrom)[0],
+    textTo = xUml.desktop.get("."+nTo)[0],
+    grpFrom = xUml.desktop.get("."+nFrom)[0].parent,
+    grpTo = xUml.desktop.get("."+nTo)[0].parent,
+    boxFrom = grpFrom.get("."+nFrom)[0].attrs,
+    boxTo = grpTo.get("."+nTo)[0].attrs,
+    xStart = 0, yStart = 0, xEnd = 0, yEnd = 0;
+    // To
+    var nodeTypeTo = xUml.desktop.get("."+nTo)[0].nodeType;
+    var classNameTo = xUml.desktop.get("."+nTo)[0].className;
+
+
+    console.log(textFrom, grpFrom, boxFrom);
+    console.log(textFrom.attrs.x, grpFrom.children[0]);
+
+    xStart = textFrom.attrs.x + grpFrom.attrs.x + grpFrom.children[0].attrs.width - 7;
+    yStart = textFrom.attrs.y + grpFrom.attrs.y + textFrom.attrs.fontSize;
+
+    console.log('destination', nodeTypeTo, classNameTo);
+    console.log(boxTo, grpTo);
+    xEnd = boxTo.x;
+    yEnd = boxTo.y+16;
+
+    console.log([xStart, yStart, xEnd, yEnd]);
+    //Depends on position but...
+    var line = new Kinetic.Line({
+        points: [xStart, yStart, xEnd, yEnd],
+        stroke: "green",
+        strokeWidth: 2,
+        name: "arrow",
+        lineJoin: "round"
+    });
+    xUml.desktop.add(line);
+    xUml.desktop.draw();
+};
+
+
+xUml.relArrow = function ( nameFrom, nameTo, arrowType ){
     var nFrom = nameFrom || xUml.selection.data.from,
-    nTo = nameTo || xUml.selection.data.to,
-    grpFrom = (xUml.desktop.get("."+nFrom)[0].className == "Text")?xUml.desktop.get("."+nFrom)[0].parent:xUml.desktop.get("."+nFrom)[0],
+    nTo = nameTo || xUml.selection.data.to;
+
+    // Enum all possible relations
+    var enumArrowTypes = ['-', '->', '1..*', '1..1', '<->'];
+    // Class name, and nodetype
+    var nodeTypeFrom = xUml.desktop.get("."+nFrom)[0].nodeType;
+    var classNameFrom = xUml.desktop.get("."+nFrom)[0].className;
+    arrowType = arrowType || '-';
+
+    if (typeof xUml.relStrat[nodeTypeFrom] === "function") {
+        xUml.relStrat[nodeTypeFrom]( nFrom, nTo, arrowType);
+    } else if (typeof xUml.relStrat[nodeTypeFrom] === "object") {
+        if (classNameFrom && typeof xUml.relStrat[nodeTypeFrom][classNameFrom] === "function") {
+            xUml.relStrat[nodeTypeFrom][classNameFrom]( nFrom, nTo, arrowType);
+        }
+    }
+
+    console.log(classNameFrom, "<--", nodeTypeFrom);
+/*
+    var grpFrom = (xUml.desktop.get("."+nFrom)[0].className == "Text")?xUml.desktop.get("."+nFrom)[0].parent:xUml.desktop.get("."+nFrom)[0],
     grpTo = (xUml.desktop.get("."+nTo)[0].className == "Text")?xUml.desktop.get("."+nTo)[0].parent:xUml.desktop.get("."+nTo)[0],
     boxFrom = (grpFrom.className == "Text")? grpFrom.get("."+nFrom)[0].attrs: grpFrom.children[0].attrs,
     boxTo = (grpTo.className == "Text") ? grpTo.get("."+nTo)[0].attrs : grpTo.children[0].attrs,
@@ -508,6 +642,7 @@ xUml.relArrow = function(nameFrom,nameTo){
     });
     xUml.desktop.add(line);
     xUml.desktop.draw();
+*/
 }
 
 /**
@@ -717,7 +852,7 @@ window.onload = function() {
     xUml.init({
         container: "graph-container",
         width: $("#graph-container").width() || 578,
-        height: 400
+        height: 600
     });
     xUml.render();
 
