@@ -537,118 +537,6 @@ xUml.relArrow = function ( nameFrom, nameTo, arrowType ){
     }
 
     console.log(classNameFrom, "<--", nodeTypeFrom);
-/*
-    var grpFrom = (xUml.desktop.get("."+nFrom)[0].className == "Text")?xUml.desktop.get("."+nFrom)[0].parent:xUml.desktop.get("."+nFrom)[0],
-    grpTo = (xUml.desktop.get("."+nTo)[0].className == "Text")?xUml.desktop.get("."+nTo)[0].parent:xUml.desktop.get("."+nTo)[0],
-    boxFrom = (grpFrom.className == "Text")? grpFrom.get("."+nFrom)[0].attrs: grpFrom.children[0].attrs,
-    boxTo = (grpTo.className == "Text") ? grpTo.get("."+nTo)[0].attrs : grpTo.children[0].attrs,
-    xStart = 0, yStart = 0, xEnd = 0, yEnd = 0;
-    // console.log(xUml.desktop.get("."+nFrom)[0]);
-    //console.log(xUml.desktop.get("."+nFrom)[0].children[0].attrs);
-    //console.log(xUml.desktop.get("."+nTo)[0].children[0].attrs);
-
-    if(xUml.desktop.get("."+nFrom)[0].className == "Text") {
-
-        if(grpFrom.attrs.x <= grpTo.attrs.x){ // F -> T
-            // console.log(((grpFrom.attrs.x + boxFrom.width) <= (grpTo.attrs.x + Math.round(boxTo.width/2))));
-            console.log((grpFrom.attrs.x + boxFrom.width) <= (grpTo.attrs.x + boxTo.width));
-            if((grpFrom.attrs.x + boxFrom.width) <= grpTo.attrs.x){// Pm1 = Xo + Wo/2
-                xStart = grpFrom.attrs.x + boxFrom.width;
-                yStart = grpFrom.attrs.y + Math.round(boxFrom.height/2);
-                xEnd = grpTo.attrs.x;
-                yEnd = grpTo.attrs.y + Math.round(boxTo.height/2);
-            }else{ //too close
-                if(grpFrom.attrs.y < grpTo.attrs.y){ // bottom To
-                    xStart = grpFrom.attrs.x + Math.round(boxFrom.width/2);
-                    yStart = grpFrom.attrs.y + boxFrom.height;
-                    xEnd = grpTo.attrs.x + Math.round(boxTo.width/2);
-                    yEnd = grpTo.attrs.y;
-                }else{ // bottom From
-                    xStart = grpFrom.attrs.x + Math.round(boxFrom.width/2);
-                    yStart = grpFrom.attrs.y;
-                    xEnd = grpTo.attrs.x + Math.round(boxTo.width/2);
-                    yEnd = grpTo.attrs.y + boxTo.height;
-                }
-            }
-        }else if (grpFrom.attrs.x > grpTo.attrs.x) { // T <- F
-            console.log(grpFrom.attrs.x >= (grpTo.attrs.x + Math.round(boxTo.width/2)));
-            if(grpFrom.attrs.x >= (grpTo.attrs.x + boxTo.width)){
-                xStart = grpFrom.attrs.x;
-                yStart = grpFrom.attrs.y + Math.round(boxFrom.height/2);
-                xEnd = grpTo.attrs.x + boxTo.width;
-                yEnd = grpTo.attrs.y + Math.round(boxTo.height/2);
-            }else{
-                if(grpFrom.attrs.y <= grpTo.attrs.y){ // bottom To
-                    xStart = grpFrom.attrs.x + Math.round(boxFrom.width/2);
-                    yStart = grpFrom.attrs.y + boxFrom.height;
-                    xEnd = grpTo.attrs.x + Math.round(boxTo.width/2);
-                    yEnd = grpTo.attrs.y;
-                }else{ // bottom From
-                    xStart = grpFrom.attrs.x + Math.round(boxFrom.width/2);
-                    yStart = grpFrom.attrs.y;
-                    xEnd = grpTo.attrs.x + Math.round(boxTo.width/2);
-                    yEnd = grpTo.attrs.y + boxTo.height;
-                }
-            }
-        }
-    } else {
-    
-        if(grpFrom.attrs.x <= grpTo.attrs.x){ // F -> T
-            // console.log(((grpFrom.attrs.x + boxFrom.width) <= (grpTo.attrs.x + Math.round(boxTo.width/2))));
-            console.log((grpFrom.attrs.x + boxFrom.width) <= (grpTo.attrs.x + boxTo.width));
-            if((grpFrom.attrs.x + boxFrom.width) <= grpTo.attrs.x){// Pm1 = Xo + Wo/2
-                xStart = grpFrom.attrs.x + boxFrom.width;
-                yStart = grpFrom.attrs.y + Math.round(boxFrom.height/2);
-                xEnd = grpTo.attrs.x;
-                yEnd = grpTo.attrs.y + Math.round(boxTo.height/2);
-            }else{ //too close
-                if(grpFrom.attrs.y < grpTo.attrs.y){ // bottom To
-                    xStart = grpFrom.attrs.x + Math.round(boxFrom.width/2);
-                    yStart = grpFrom.attrs.y + boxFrom.height;
-                    xEnd = grpTo.attrs.x + Math.round(boxTo.width/2);
-                    yEnd = grpTo.attrs.y;
-                }else{ // bottom From
-                    xStart = grpFrom.attrs.x + Math.round(boxFrom.width/2);
-                    yStart = grpFrom.attrs.y;
-                    xEnd = grpTo.attrs.x + Math.round(boxTo.width/2);
-                    yEnd = grpTo.attrs.y + boxTo.height;
-                }
-            }
-        }else if (grpFrom.attrs.x > grpTo.attrs.x) { // T <- F
-            console.log(grpFrom.attrs.x >= (grpTo.attrs.x + Math.round(boxTo.width/2)));
-            if(grpFrom.attrs.x >= (grpTo.attrs.x + boxTo.width)){
-                xStart = grpFrom.attrs.x;
-                yStart = grpFrom.attrs.y + Math.round(boxFrom.height/2);
-                xEnd = grpTo.attrs.x + boxTo.width;
-                yEnd = grpTo.attrs.y + Math.round(boxTo.height/2);
-            }else{
-                if(grpFrom.attrs.y <= grpTo.attrs.y){ // bottom To
-                    xStart = grpFrom.attrs.x + Math.round(boxFrom.width/2);
-                    yStart = grpFrom.attrs.y + boxFrom.height;
-                    xEnd = grpTo.attrs.x + Math.round(boxTo.width/2);
-                    yEnd = grpTo.attrs.y;
-                }else{ // bottom From
-                    xStart = grpFrom.attrs.x + Math.round(boxFrom.width/2);
-                    yStart = grpFrom.attrs.y;
-                    xEnd = grpTo.attrs.x + Math.round(boxTo.width/2);
-                    yEnd = grpTo.attrs.y + boxTo.height;
-                }
-            }
-        }
-    }
-    
-    console.log([xStart, yStart, xEnd, yEnd]);
-    //Depends on position but...
-    var line = new Kinetic.Line({
-        points: [xStart, yStart, xEnd, yEnd],
-        stroke: "black",
-        strokeWidth: 2,
-        name: "arrow",
-        lineJoin: "round"
-    });
-    xUml.desktop.add(line);
-    xUml.desktop.draw();
-*/
 }
 
 /**
@@ -866,15 +754,27 @@ window.onload = function() {
     var classRewardBox = new xUml.classBox({
         title: "Reward",
         rectX: 600,
-        rectY: 100,
+        rectY: 300,
         attrs: [
               { title: 'name', type: 'String'} 
             , { title: 'desc', type: 'String', control: 'Textarea'}
             ]
     });
     xUml.desktop.add(classRewardBox);
+    var classRuleBox = new xUml.classBox({
+        title: "Rule",
+        rectX: 590,
+        rectY: 100,
+        attrs: [
+              { title: 'name', type: 'String'} 
+            , { title: 'desc', type: 'String', control: 'Textarea'}
+            ]
+    });
+    xUml.desktop.add(classRuleBox);
     var classChallengeBox = new xUml.classBox({
         title: "Challenge",
+        rectX: 400,
+        rectY: 200,
         attrs: [
               { title: 'name', type: 'String'} 
             , { title: 'desc', type: 'String', control: 'Textarea'}
@@ -886,6 +786,7 @@ window.onload = function() {
     xUml.desktop.add(classChallengeBox);
     xUml.desktop.draw();
     xUml.relations.push({from:'attr-Challenge-idReward',to:'class-Reward'});
+    xUml.relations.push({from:'attr-Challenge-rules',to:'class-Rule'});
     xUml.relDraw()
 
     //xUml.parseClass($('textarea').eq(0).val());
