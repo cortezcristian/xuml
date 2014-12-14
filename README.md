@@ -3,6 +3,10 @@ xuml
 
 Draw basic UML
 
+See the [video](https://www.youtube.com/watch?v=jhG78R7BEa0&feature=youtu.be):
+
+[![See the video](https://i.ytimg.com/vi/jhG78R7BEa0/hqdefault.jpg)](https://www.youtube.com/watch?v=jhG78R7BEa0&feature=youtu.be)
+
 ```
 C Challenge
 a name : String
