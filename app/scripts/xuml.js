@@ -492,15 +492,21 @@ xUml.relStrat.Shape.Text = function( nFrom, nTo, arrowType) {
     xStart = textFrom.attrs.x + grpFrom.attrs.x + grpFrom.children[0].attrs.width - 7;
     yStart = textFrom.attrs.y + grpFrom.attrs.y + textFrom.attrs.fontSize;
 
+    xStartA = xStart+20;
+    yStartA = yStart;
+
     console.log('destination', nodeTypeTo, classNameTo);
     console.log(boxTo, grpTo);
     xEnd = boxTo.x;
     yEnd = boxTo.y+16;
 
+    xEndB = xEnd-20;
+    yEndB = yEnd;
+
     console.log([xStart, yStart, xEnd, yEnd]);
     //Depends on position but...
     var line = new Kinetic.Line({
-        points: [xStart, yStart, xEnd, yEnd],
+        points: [xStart, yStart, xStartA, yStartA, xEndB, yEndB, xEnd, yEnd],
         stroke: "green",
         strokeWidth: 2,
         name: "arrow",
